@@ -1,11 +1,27 @@
-﻿#include <gl/glut.h>
+﻿
 #include <stdio.h>
+#include <cstdlib>
+#include "draw.h"
+#include "repo.h"
+#include <gl/glut.h>
+
+
+
 
 
 int WindW, WindH;
-int i;
-float x = 0;
-int alpha;
+
+
+
+float randomFloat()
+{
+	return  -0.9f + (static_cast <float> (rand()) / static_cast <float> (RAND_MAX))*2;
+}
+
+
+ObjectDescription* repo = NULL;
+
+
 void Reshape(int width, int height) // Reshape function 
 {
 	glViewport(0, 0, width, height);
@@ -20,21 +36,10 @@ void Reshape(int width, int height) // Reshape function
 void Draw(void) // Window redraw function 
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glLineWidth(3);
-	glColor3f(0.0f, 0.6f, 0.9f);
-	glPushMatrix();
-	glRotatef(alpha, 0.0f, 0.0f, 1.0f);
-	alpha += 4;
-	if (alpha > 359) alpha = 0;
-	x += 0.01f;
-	if (x > 0.8f) {
-		x = 0.0f;
-	}
-	glBegin(GL_LINES);
- 	glVertex2f(-1.0f+x, 0.1f);
-	glVertex2f(-0.8f+x, -0.1f);
-	glEnd();
-	glPopMatrix();
+
+	
+	DrawAll(repo);
+
 	glFlush();
 	glutSwapBuffers();
 }
@@ -49,7 +54,7 @@ void timf(int value) // Timer function
 {
 	glutPostRedisplay();
 	// Redraw windows 
-	glutTimerFunc(120, timf, 0);
+	glutTimerFunc(40, timf, 0);
 	// Setup next timer 
 }
 
@@ -57,7 +62,25 @@ void timf(int value) // Timer function
 int main(int argc, char* argv[])
 {
 	WindW = 800; WindH = 800;
-	alpha = 0;
+	
+	repo = CreateLuncher(repo);
+
+	// init random line
+	
+	for (float i = -0.8f; i < 0; i+=0.1f) {			
+		ObjectDescription *o = new ObjectDescription;
+		o->x = i;
+		o->y = i;
+		o->alpha = trunc(360.0f * randomFloat());
+		o->dx = randomFloat()*0.1f;
+		o->dy = randomFloat()*0.1f;
+		o->enable = true;
+		o->modelAndDraw = drawLine;
+		repo = add(o, repo);
+	}
+	
+		
+
 	glutInit(&argc, argv);
 	glutInitWindowSize(WindW, WindH);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
@@ -71,4 +94,6 @@ int main(int argc, char* argv[])
 	glutMainLoop();
 	return 0;
 }
+
+
 
