@@ -5,8 +5,7 @@
 #include "repo.h"
 #include <gl/glut.h>
 
-
-
+#define SHOOT_INTERVAL 40
 
 
 int WindW, WindH;
@@ -21,6 +20,7 @@ float randomFloat()
 
 ObjectDescription* repo = NULL;
 ObjectDescription* luncher = NULL;
+long globalTimerEventCount = 0;
 
 
 void Reshape(int width, int height) // Reshape function 
@@ -57,6 +57,8 @@ void timf(int value) // Timer function
 	// Redraw windows 
 	glutTimerFunc(40, timf, 0);
 	// Setup next timer 
+	globalTimerEventCount++;
+	luncher->shoot = (globalTimerEventCount - luncher->lastShootTime >= SHOOT_INTERVAL);
 }
 
 void processKeyEvent(unsigned char key, int x, int y) {
@@ -79,7 +81,13 @@ void processSpecialKeyEvent(int key, int x, int y) {
 		case GLUT_KEY_RIGHT:
 			luncher->dx = 0.01f;
 			break;
-
+		case GLUT_KEY_INSERT:			
+			if (luncher->shoot) {
+				ObjectDescription* missle = CreateMissle(repo, luncher);
+				luncher->lastShootTime = globalTimerEventCount;
+				repo = missle;
+			}
+			break;
 		}
 	}
 }
@@ -93,7 +101,7 @@ int main(int argc, char* argv[])
 	repo = luncher;
 
 	// init random line
-	
+	/*
 	for (float i = -0.8f; i < 0; i+=0.1f) {			
 		ObjectDescription *o = new ObjectDescription;
 		o->x = i;
@@ -102,12 +110,11 @@ int main(int argc, char* argv[])
 		o->dx = randomFloat()*0.1f;
 		o->dy = randomFloat()*0.1f;
 		o->enable = true;
-		o->modelAndDraw = drawLine;
+		o->modelAndDraw = drawMissle;
 		repo = add(o, repo);
 	}
-	
+	*/
 		
-
 	glutInit(&argc, argv);
 	glutInitWindowSize(WindW, WindH);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);

@@ -9,11 +9,13 @@ struct ObjectDescription
 	float y, dy;
 	int alpha;
 	bool enable;
+	int lastShootTime;
+	bool shoot;
 	void (*modelAndDraw)(ObjectDescription* elem);
 	ObjectDescription* next;
 };
 
-void drawLine(ObjectDescription* model);
+void drawMissle(ObjectDescription* model);
 
 void drawLuncher(ObjectDescription* model);
 #endif // !_draw
