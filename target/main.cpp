@@ -20,6 +20,7 @@ float randomFloat()
 
 
 ObjectDescription* repo = NULL;
+ObjectDescription* luncher = NULL;
 
 
 void Reshape(int width, int height) // Reshape function 
@@ -58,12 +59,38 @@ void timf(int value) // Timer function
 	// Setup next timer 
 }
 
+void processKeyEvent(unsigned char key, int x, int y) {
+
+}
+
+
+void processSpecialKeyEvent(int key, int x, int y) {
+	if (luncher != NULL && luncher->enable) {
+		switch (key) {
+		case GLUT_KEY_UP:
+			luncher->dy = 0.01f;
+			break;
+		case GLUT_KEY_DOWN:
+			luncher->dy = -0.01f;
+			break;
+		case GLUT_KEY_LEFT:
+			luncher->dx = -0.01f;
+			break;
+		case GLUT_KEY_RIGHT:
+			luncher->dx = 0.01f;
+			break;
+
+		}
+	}
+}
+
 
 int main(int argc, char* argv[])
 {
 	WindW = 800; WindH = 800;
 	
-	repo = CreateLuncher(repo);
+	luncher = CreateLuncher(repo);
+	repo = luncher;
 
 	// init random line
 	
@@ -89,6 +116,8 @@ int main(int argc, char* argv[])
 	// Set up reshape function 
 	glutDisplayFunc(Draw); // Set up redisplay function 
 	glutTimerFunc(40, timf, 0); // Set up timer for 40ms, about 25 fps 
+	glutKeyboardFunc(processKeyEvent);
+	glutSpecialFunc(processSpecialKeyEvent);
 	glutVisibilityFunc(Visibility); // Set up visibility funtion 
 	glClearColor(0, 0, 0, 0);
 	glutMainLoop();

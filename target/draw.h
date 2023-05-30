@@ -13,7 +13,7 @@ struct ObjectDescription
 	ObjectDescription* next;
 };
 
-void drawLine(ObjectDescription* descr);
+void drawLine(ObjectDescription* model);
 
-void drawLuncher(ObjectDescription* descr);
+void drawLuncher(ObjectDescription* model);
 #endif // !_draw
